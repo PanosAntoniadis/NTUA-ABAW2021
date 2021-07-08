@@ -162,7 +162,6 @@ class Video_dataset_cat(Dataset):
 
                 # check if path to raw frame exists, if not get the previous one
                 while not os.path.exists(raw_path):
-                    #print(raw_path)
                     frame_num=str(int(frame_num)-1).zfill(5)
                     raw_path = os.path.join(self.openpose_path, str(video_name) + '_frames', str(frame_num) + '.jpg')
                 # get raw frame
@@ -189,7 +188,6 @@ class Video_dataset_cat(Dataset):
 
                 # check if path to raw frame exists, if not get the previous one
                 while not os.path.exists(raw_path):
-                    #print(raw_path)
                     frame_num=str(int(frame_num)-1).zfill(5)
                     raw_path = os.path.join(self.openpose_path, str(video_name) + '_frames', str(frame_num) + '.jpg')
                 # get raw frame
@@ -202,7 +200,6 @@ class Video_dataset_cat(Dataset):
                     face = Image.fromarray(np.zeros((112, 112, 3), dtype=np.uint8), 'RGB')
                 else:
                     face = Image.open(face_path).convert("RGB")            
-
 
             if self.transform:
                 if not self.audio:
@@ -241,9 +238,7 @@ class Video_dataset_cat(Dataset):
             mel_file = mel_file.replace("_right","").replace("_left","")
             mel = np.load(mel_file)
 
-            # print(np.max(mfc),np.min(mfc))
             audio_frames = []
-
             window_stride = 512/44100 # seconds
 
             # mel spec
@@ -260,7 +255,6 @@ class Video_dataset_cat(Dataset):
                 # audio_features = self.scaler.transform(audio_features.T).T
 
                 audio_features = torch.Tensor(audio_features)#.unsqueeze(0)
-                # print(audio_features.size())
                 if audio_features.size(2) != l:
                     audio_features = F.pad(audio_features,[0, l-audio_features.size(2)])
 
