@@ -8,20 +8,11 @@ import model.metric as module_metric
 from parse_config import ConfigParser
 from logger import setup_logging
 from model import loss
-# from affwild2.dataset import Video_dataset_cat, Video_dataset_cont, Video_dataset_au, Video_dataset_mtl
-# from affwild2.dataset_eval import Video_dataset_cat_eval, Video_dataset_cont_eval, Video_dataset_au_eval
 
-from affwild2.dataset_bc import Video_dataset_cat, Video_dataset_cont
-
-from affwild2.dataset_eval_bc import Video_dataset_cat_eval, Video_dataset_cont_eval, Video_dataset_au_eval
-
-
-from trainer.trainer_affwild2_audio import Trainer
-from trainer.trainer_affwild2_mtl import Trainer_mtl
-from trainer.trainer_affwild2_mtl_separate import Trainer_mtl_separate
-from affwild2.models_combination import resnet50_rnn
-
-from affwild2.gcn_models import resnet50_rnn_gcn
+from affwild2.dataset import Video_dataset_cat, Video_dataset_cont
+from affwild2.dataset_eval import Video_dataset_cat_eval, Video_dataset_cont_eval
+from trainer.trainer_affwild2 import Trainer
+from affwild2.models import resnet50_rnn
 
 # fix random seeds for reproducibility
 SEED = 123
@@ -39,47 +30,42 @@ def main(args, config):
     track = config['track']  # 1:VA / 2:EXPR / 3:AU 
 
     train_transform = torchvision.transforms.Compose([
-        transforms.Resize(size=(112, 112)),
+                    transforms.Resize(size=(112, 112)),
                     transforms.ToTensor(),
                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
                                  0.229, 0.224, 0.225])])
     val_transform = torchvision.transforms.Compose([
-        transforms.Resize(size=(112, 112)),                    transforms.ToTensor(),
+                    transforms.Resize(size=(112, 112)),                    
+                    transforms.ToTensor(),
                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
                                  0.229, 0.224, 0.225])])
 
     if track == 1:
         # valence-arousal estimation
         num_classes = 2
-        val_dataset = Video_dataset_cont(data_pkl, train=False, transform=val_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'], optical_flow=config['modalities']['optical_flow'])
+        val_dataset = Video_dataset_cont(data_pkl, train=False, transform=val_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'])
         metrics = [getattr(module_metric, met) for met in config['metrics_continuous']]
-        total_frames = 1593961
         train_dataset = Video_dataset_cont(data_pkl, train=True, transform=train_transform, duration=duration,
                                             audio=config['modalities']['audio'],
-                                            context=config['modalities']['context'], body=config['modalities']['body'],
-                                            optical_flow=config['modalities']['optical_flow'])
+                                            context=config['modalities']['context'], body=config['modalities']['body'])
         criterion = getattr(module_loss, config['loss_continuous'])
     elif track == 2: 
         # seven basic expression classification
         num_classes = 7
-        val_dataset = Video_dataset_cat(data_pkl, train=False, transform=val_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'], optical_flow=config['modalities']['optical_flow'])
+        val_dataset = Video_dataset_cat(data_pkl, train=False, transform=val_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'])
         metrics = [getattr(module_metric, met) for met in config['metrics_categorical']]
-        total_frames = 557154
-        train_dataset = Video_dataset_cat(data_pkl, train=True, transform=train_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'], optical_flow=config['modalities']['optical_flow'])
+        train_dataset = Video_dataset_cat(data_pkl, train=True, transform=train_transform, duration=duration, audio=config['modalities']['audio'], context=config['modalities']['context'], body=config['modalities']['body'])
         criterion = getattr(module_loss, config['loss_categorical'])        
     else:
         raise  NotImplementedError
 
-
     print("Total train data:{}".format(len(train_dataset)))
-    print("Iterations per epoch:{}".format(len_epoch))
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size, shuffle=True,
         num_workers=num_workers, pin_memory=True)
 
     print("Total val data:{}".format(len(val_dataset)))
-    
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=batch_size, shuffle=False,
@@ -92,9 +78,9 @@ def main(args, config):
                                    rnn_hidden_size=config['rnn']['hidden_size'],
                                    rnn_num_layers=config['rnn']['num_layers'],
                                    dropout=config['arch']['args']['dropout'], rnn_type=config['rnn']['type'],
-                                audio=config['modalities']['audio'], context=config['modalities']['context'],
-                                body=config['modalities']['body'], optical_flow=config['modalities']['optical_flow'],
-                                   body_arch='resnet50', context_arch='resnet50', bidirectional=True)
+                                   audio=config['modalities']['audio'], context=config['modalities']['context'],
+                                   body=config['modalities']['body'], body_arch='resnet50', 
+                                   context_arch='resnet50', bidirectional=True)
     else:
         raise NotImplementedError
 
@@ -105,8 +91,6 @@ def main(args, config):
     logger = config.get_logger('train')
     logger.info(model)
 
-
-
     optimizer = config.init_obj('optimizer', torch.optim, model.parameters())
     lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
 
@@ -115,10 +99,9 @@ def main(args, config):
                     data_loader=train_loader,
                     track=track,
                     valid_data_loader=val_loader,
-                    lr_scheduler=lr_scheduler, len_epoch=len_epoch, optical_flow=config['modalities']['optical_flow'])
+                    lr_scheduler=lr_scheduler, len_epoch=None)
 
     trainer.train()
-
 
 
 if __name__ == '__main__':

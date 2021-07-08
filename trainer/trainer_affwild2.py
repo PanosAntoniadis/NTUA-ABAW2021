@@ -14,15 +14,9 @@ import torch.nn.functional as F
 
 def mse_center_loss_expr(output, target, labels):
     t = labels.clone().detach()
-
     target = target[0, :7]
-
     positive_centers = target[labels]
-
-    # print(positive_centers.shape, target.shape, output.shape)
-
     loss = F.mse_loss(output, positive_centers)
-
     return loss
 
 
@@ -31,11 +25,10 @@ class Trainer(BaseTrainer):
     Trainer class
     """
     def __init__(self, model, criterion, metrics, optimizer, config, data_loader,
-                 track, valid_data_loader=None, lr_scheduler=None, len_epoch=None, optical_flow=False):
+                 track, valid_data_loader=None, lr_scheduler=None, len_epoch=None):
         super().__init__(model, criterion, metrics, optimizer, config)
         self.data_loader = data_loader
         self.track = track
-        self.optical_flow = optical_flow
         self.body = False
         self.audio = True
         self.context = False
@@ -64,10 +57,6 @@ class Trainer(BaseTrainer):
             self.train_metrics = MetricTracker('accuracy', 'f1_score', 'total', 'loss', writer=self.writer)
             self.valid_metrics = MetricTracker('accuracy', 'f1_score', 'total', 'loss', writer=self.writer)
             self.num_classes = 7
-        elif self.track == 3:
-            self.train_metrics = MetricTracker('accuracy_binary', 'f1_score_binary', 'total', 'loss', writer=self.writer)
-            self.valid_metrics = MetricTracker('accuracy_binary', 'f1_score_binary', 'total', 'loss', writer=self.writer)
-            self.num_classes = 12
         else:
             raise NotImplementedError
             
@@ -103,9 +92,7 @@ class Trainer(BaseTrainer):
         running_loss = 0.0
         count = 0
 
-
         for batch_idx, data in enumerate(data_loader):
-            # print(audio)
             if self.track == 1:
                 target = data['cont']
             else:
@@ -116,19 +103,13 @@ class Trainer(BaseTrainer):
             if self.embed:
                 embeddings = data['embeddings'].to(self.device)
 
-            if self.optical_flow:
-                faces = data['flow']
+            if not self.audio:
+                faces = data['faces']
                 faces = faces.to(self.device)
                 b, t, c, h, w = faces.shape
-            else:
-                if not self.audio:
-                    faces = data['faces']
-                    faces = faces.to(self.device)
-                    b, t, c, h, w = faces.shape
 
             if self.audio:
                 audio = data['audio'].to(self.device)
-                # print(audio.shape)
                 b, t, c, h, w = audio.shape
 
             target = target.to(self.device)
@@ -145,7 +126,6 @@ class Trainer(BaseTrainer):
             out= self.model(audio)
             # out, out_embed = self.model(audio)
             out = out.view(b*t, self.num_classes)
-
 
             target = target.view(b*t, -1).squeeze()
             valid = valid.view(b*t)
@@ -170,6 +150,7 @@ class Trainer(BaseTrainer):
 
             if self.track == 3:
                 out = torch.sigmoid(out)
+
             outputs.append(out.cpu().detach().numpy())
             targets.append(target.cpu().detach().numpy())
 
@@ -188,11 +169,8 @@ class Trainer(BaseTrainer):
         else:
             self.writer.set_step(epoch, phase)
 
-        # assert(count==len(data_loader.dataset))
         epoch_loss = running_loss/count
-        # print(count)
         metrics.update('loss', epoch_loss)
-
 
         output = np.concatenate(outputs, axis=0)
         target = np.concatenate(targets, axis=0)
@@ -209,22 +187,6 @@ class Trainer(BaseTrainer):
             metrics.update("accuracy", accuracy)
             metrics.update("f1_score", f1_score)
             total = 0.67*f1_score + 0.33*accuracy
-            metrics.update("total", total)
-
-            # f1_score_all = model.metric.f1_score(output, target, average=None)
-            # self.writer.add_figure('%s f1 score per class' % phase,
-            #                        make_barplot(f1_score_all, ['Neutral,Anger,Disgust,Fear,Happiness,Sadness,Surprise'], 'f1 score'))
-
-        elif self.track == 3:
-            output[output >= 0.5] = 1
-            output[output < 0.5] = 0
-            output = output.flatten()
-            target = target.flatten()
-            accuracy_binary = model.metric.accuracy_binary(output, target)
-            f1_score_binary = model.metric.f1_score_binary(output, target)
-            metrics.update("accuracy_binary", accuracy_binary)
-            metrics.update("f1_score_binary", f1_score_binary)
-            total = 0.5*f1_score_binary + 0.5*accuracy_binary
             metrics.update("total", total)
         else:
             raise NotImplementedError
