@@ -1,0 +1,60 @@
+{
+    "name": "AffWild experiment",
+    "run_id": "test",
+    "n_gpu": 1,
+    "track": 2,
+    "data_loader": {
+          "data_pkl": "affwild2/data.pkl",             
+          "batch_size": 16,               
+          "num_workers": 4,
+          "duration" : 16
+      },
+    "arch": {
+        "type": "resnet50_rnn",
+        "args": {
+            "dropout": 0.1,
+            "pretrained_affectnet": "no"
+        }
+    },
+    "rnn": {
+        "hidden_size": 512,
+        "num_layers": 1,
+        "type": "lstm"
+    },
+    "loss_categorical": "cross_entropy_loss",
+    "loss_continuous": "ccc",
+    "metrics_categorical": [
+        "accuracy", "f1_score"
+    ],
+    "metrics_continuous": [
+        "ccc"
+    ],
+    "optimizer": {
+        "type": "SGD",
+        "args":{
+            "momentum": 0.9,
+            "weight_decay": 5e-4,
+            "lr": 1e-3
+        }
+    },
+    "lr_scheduler": {
+        "type": "ReduceLROnPlateau",
+        "args": {
+            "verbose": true,
+            "patience": 5,
+            "mode": "max"
+        }
+    },
+    "trainer": {
+        "epochs": 300,
+        "save_dir": "logs/affwild2",
+
+        "save_period": 1,
+        "verbosity": 2,
+        
+        "monitor": "max val_total",
+        "early_stop": 10,
+
+        "tensorboard": true
+    }
+}
