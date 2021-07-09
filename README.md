@@ -22,14 +22,14 @@ This repository contains the source code of the team NTUA-CVSP for the 2nd Affec
 ## Training
 
 
-To train our model for VA estimation (track 1) run:
+To train the proposed model for VA estimation (track 1) run:
 
-> python train_affwdild2.py -c config.json --track 1 --pretrained_affectnet single --context --body --face --optimizer SGD --lr 0.001
+> python train_affwild2.py -c config.json --track 1 --pretrained_affectnet single --optimizer SGD --lr 0.001 --context --body --face
 
 
-To train our model for basic expression classifcation (track 2) run:
+To train the proposed model for basic expression classifcation (track 2) run:
 
-> python train_affwdild2.py -c config.json --track 2 --pretrained_affectnet single --context --body --face --optimizer SGD --lr 0.001
+> python train_affwild2.py -c config.json --track 2 --pretrained_affectnet single --optimizer SGD --lr 0.001 --context --body --face
 
 
 ## Pretrained Models
@@ -51,7 +51,6 @@ If you use this code for your research, consider citing our paper.
     year={2021}
 }
 ```
-
 
 
 ## Acknowlegements
