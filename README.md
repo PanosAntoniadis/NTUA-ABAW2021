@@ -43,6 +43,14 @@ To train our model for basic expression classifcation (track 2) run:
 
 If you use this code for your research, consider citing our paper.
 
+```
+@article{NTUA_ABAW2,
+    title={An audiovisual and contextual approach for categorical and continuous emotion recognition in-the-wild},
+    author={Panagiotis Antoniadis and Ioannis Pikoulis and Panagiotis P. Filntisis and Petros Maragos},
+    journal={arXiv preprint arXiv:2107.03465}
+    year={2021}
+}
+```
 
 
 
