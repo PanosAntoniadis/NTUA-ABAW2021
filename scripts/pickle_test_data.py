@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from affwild2.dataset import Frame_annotation_cat, Frame_annotation_cont, Video_annotation
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = "Process annotations of Aff-Wild2 database test set")
+    parser = argparse.ArgumentParser(description = "Process annotations of Aff-Wild2 database (test set)")
     parser.add_argument('--cat_videos', type=str)
     parser.add_argument('--cont_videos', type=str)
     parser.add_argument('--videos_dir', type=str)

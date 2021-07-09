@@ -41,7 +41,7 @@ def frames_to_label_cont_all(va, frames):
     return va[:, 0], va[:, 1], return_frames, all_frames_ids
     
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = "Process annotations of Aff-Wild2 database (all frames)")
+    parser = argparse.ArgumentParser(description = "Process annotations of Aff-Wild2 database (train/val set)")
     parser.add_argument('--annotations_dir', type=str)
     parser.add_argument('--videos_dir', type=str)
 
@@ -102,7 +102,6 @@ if __name__ == "__main__":
 
     for i, filename in enumerate(train_cat_names):
         frames_paths = sorted(glob.glob(os.path.join(videos_dir, filename, '*.jpg')))
-
         video_path = os.path.join(videos_dir.replace("cropped_aligned","videos/both_batches"),filename + ".mp4").replace("_right","").replace("_left","")
 
         if not os.path.exists(video_path):
@@ -110,7 +109,6 @@ if __name__ == "__main__":
             if not os.path.exists(video_path):
                 print(video_path)
         v = cv2.VideoCapture(video_path)
-        # print(v.get(cv2.CAP_PROP_FPS))
 
         expression_array, frames_paths, frames_ids = frames_to_label_cat_all(train_cat_values[i], frames_paths)
         frames = []
@@ -124,7 +122,6 @@ if __name__ == "__main__":
     
     for i, filename in enumerate(val_cat_names):
         frames_paths = sorted(glob.glob(os.path.join(videos_dir, filename, '*.jpg')))
-
         video_path = os.path.join(videos_dir.replace("cropped_aligned","videos/both_batches"),filename + ".mp4").replace("_right","").replace("_left","")
 
         if not os.path.exists(video_path):
@@ -145,13 +142,11 @@ if __name__ == "__main__":
         v.release()
 
 
-
     data_train_cont = []
     data_val_cont = []
 
     for i, filename in enumerate(train_cont_names):
         frames_paths = sorted(glob.glob(os.path.join(videos_dir, filename, '*.jpg')))
-
         video_path = os.path.join(videos_dir.replace("cropped_aligned","videos/both_batches"),filename + ".mp4").replace("_right","").replace("_left","")
 
         if not os.path.exists(video_path):
@@ -160,7 +155,6 @@ if __name__ == "__main__":
                 print(video_path)
                 raise
         v = cv2.VideoCapture(video_path)
-
 
         valence_array, arousal_array, frames_paths, frames_ids = frames_to_label_cont_all(train_cont_values[i], frames_paths)
         frames = []
@@ -174,7 +168,6 @@ if __name__ == "__main__":
     
     for i, filename in enumerate(val_cont_names):
         frames_paths = sorted(glob.glob(os.path.join(videos_dir, filename, '*.jpg')))
-
         video_path = os.path.join(videos_dir.replace("cropped_aligned","videos/both_batches"),filename + ".mp4").replace("_right","").replace("_left","")
 
         if not os.path.exists(video_path):
@@ -183,7 +176,6 @@ if __name__ == "__main__":
                 print(video_path)
                 raise
         v = cv2.VideoCapture(video_path)
-
 
         valence_array, arousal_array, frames_paths, frames_ids = frames_to_label_cont_all(val_cont_values[i], frames_paths)
         frames = []

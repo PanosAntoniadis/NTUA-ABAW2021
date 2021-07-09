@@ -11,7 +11,7 @@ from model import loss
 
 from affwild2.dataset import Video_dataset_cat, Video_dataset_cont
 from affwild2.dataset_eval import Video_dataset_cat_eval, Video_dataset_cont_eval
-from trainer.trainer_affwild2 import Trainer
+from trainer.trainer import Trainer
 from affwild2.models import resnet50_rnn
 
 # fix random seeds for reproducibility
