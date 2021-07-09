@@ -22,7 +22,7 @@ This repository contains the source code of the team NTUA-CVSP for the 2nd Affec
 ## Training
 
 
-To train our model for basic VA estimation (track 1) run:
+To train our model for VA estimation (track 1) run:
 
 > python train_affwdild2.py -c config.json --track 1 --pretrained_affectnet single --context --body --face --optimizer SGD --lr 0.001
 
