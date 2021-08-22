@@ -1,6 +1,6 @@
 # An audiovisual and contextual approach for categorical and continuous emotion recognition in-the-wild
 
-This repository contains the source code of the team NTUA-CVSP for the 2nd Affective Behavior Analysis in-the-wild (ABAW2) Competition organized at ICCV 2021. Please read the accompanied paper for more details ([arxiv](https://arxiv.org/pdf/2107.03465.pdf)).
+This repository contains the source code of the team NTUA-CVSP for the 2nd Affective Behavior Analysis in-the-wild (ABAW2) Competition organized at ICCV 2021. Please read the accompanied paper for more details ([arxiv](https://arxiv.org/abs/2107.03465)).
 
 
 
