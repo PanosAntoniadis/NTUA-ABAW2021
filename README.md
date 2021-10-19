@@ -44,11 +44,13 @@ To train the proposed model for basic expression classifcation (track 2) run:
 If you use this code for your research, consider citing our paper.
 
 ```
-@article{NTUA_ABAW2,
-    title={An audiovisual and contextual approach for categorical and continuous emotion recognition in-the-wild},
-    author={Panagiotis Antoniadis and Ioannis Pikoulis and Panagiotis P. Filntisis and Petros Maragos},
-    journal={arXiv preprint arXiv:2107.03465}
-    year={2021}
+@InProceedings{Antoniadis_2021_ICCV,
+    author    = {Antoniadis, Panagiotis and Pikoulis, Ioannis and Filntisis, Panagiotis P. and Maragos, Petros},
+    title     = {An Audiovisual and Contextual Approach for Categorical and Continuous Emotion Recognition In-the-Wild},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) Workshops},
+    month     = {October},
+    year      = {2021},
+    pages     = {3645-3651}
 }
 ```
 
