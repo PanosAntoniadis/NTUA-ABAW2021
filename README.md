@@ -1,6 +1,11 @@
 # An audiovisual and contextual approach for categorical and continuous emotion recognition in-the-wild
 
-This repository contains the source code of the team NTUA-CVSP for the 2nd Affective Behavior Analysis in-the-wild (ABAW2) Competition organized at ICCV 2021. Please read the accompanied paper for more details ([arxiv](https://arxiv.org/abs/2107.03465)).
+This repository hosts the official PyTorch source code of the team NTUA-CVSP for the 2nd Affective Behavior Analysis in-the-wild (ABAW2) Competition organized at ICCV 2021. 
+
+Abstract:
+> In this work we tackle the task of video-based audio-visual emotion recognition, within the premises of the 2nd Workshop and Competition on Affective Behavior Analysis in-the-wild (ABAW2). Poor illumination conditions, head/body orientation and low image resolution constitute factors that can potentially hinder performance in case of methodologies that solely rely on the extraction and analysis of facial features. In order to alleviate this problem, we leverage both bodily and contextual features, as part of a broader emotion recognition framework. We choose to use a standard CNN-RNN cascade as the backbone of our proposed model for sequence-to-sequence (seq2seq) learning. Apart from learning through the RGB input modality, we construct an aural stream which operates on sequences of extracted mel-spectrograms. Our extensive experiments on the challenging and newly assembled Aff-Wild2 dataset verify the validity of our intuitive multi-stream and multi-modal approach towards emotion recognition in-the-wild. Emphasis is being laid on the the beneficial influence of the human body and scene context, as aspects of the emotion recognition process that have been left relatively unexplored up to this point. All the code was implemented using PyTorch and is publicly available.
+
+You can read the full paper [here](https://arxiv.org/abs/2107.03465).
 
 
 
